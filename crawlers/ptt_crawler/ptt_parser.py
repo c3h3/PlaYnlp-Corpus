@@ -12,18 +12,18 @@ import re
 import lxml 
 
 
-gen_ptt_board_page_url = lambda b_name: "http://www.ptt.cc/bbs/%s/index.html" % b_name
+gen_ptt_board_page_url = lambda b_name: "https://www.ptt.cc/bbs/%s/index.html" % b_name
 
 
 def get_ptt_article_url_lists(one_ptt_url):
-    res = requests.get(one_ptt_url)
+    res = requests.get(one_ptt_url,verify=False)
     S = PyQuery(res.text)
     _article_urls = S(".title a").map(lambda :PyQuery(this).attr("href"))
-    article_urls = ["http://www.ptt.cc%s" % one_url for one_url in _article_urls if one_url.startswith("/bbs")]
+    article_urls = ["https://www.ptt.cc%s" % one_url for one_url in _article_urls if one_url.startswith("/bbs")]
     return article_urls
 
 def get_max_pages(one_ptt_board_url):
-    res = requests.get(one_ptt_board_url)
+    res = requests.get(one_ptt_board_url,verify=False)
     S = PyQuery(res.text)
     return int(PyQuery(S("div.btn-group.pull-right > a")[1]).attr("href").split("index")[1].split(".")[0])
 
@@ -37,7 +37,7 @@ def get_all_pages_url(one_ptt_board_url):
 
 
 def get_one_article_meta_data(one_article_url):
-    one_article_res = requests.get(one_article_url)
+    one_article_res = requests.get(one_article_url,verify=False)
     SS = PyQuery(one_article_res.text)
     one_article_data = {}
     one_article_data["Board"] = SS(".article-metaline-right > .article-meta-value").text()
